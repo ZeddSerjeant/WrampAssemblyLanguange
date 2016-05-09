@@ -1,0 +1,75 @@
+%YAML1.2
+---
+# Created by Zedd <zjtp1@students.waikato.ac.nz>
+# See http://www.sublimetext.com/docs/3/syntax.html
+# For the WRAMP language of the Waikato University
+
+file_extensions:
+  - s
+scope: source.s
+
+first_line_match: .global main
+
+contexts:
+  main:
+    # Comments begin with a '#' and finish at the end of the line
+    - match: '#'
+      scope: punctuation.definition.comment.s
+      push: line_comment
+
+    # Directives
+    - match: '(?:\.[A-Za-z]*)'
+      scope: entity.name.function.s
+
+    # Decimal Numbers
+    - match: '\b(?:[0-9.]+)\b'
+      scope: constant.numeric.s
+
+    # Hex Numbers
+    - match: '\b0x[0-9A-Fa-f]+\b'
+      scope: constant.numeric.s
+
+    # Characters
+    - match: "'.'"
+      scope: constant.character.s
+
+    # Label Declaration
+    - match: '\A\s*[A-Za-z_-]+:'
+      scope: string.s
+
+    # General Purpose Registers
+    - match: '(?:\$1[0-5]|\$[0-9])?\b'
+      scope: entity.name.tag.s
+
+    # Special Purpose Registers
+    - match: '\$(?:cctrl|estat|evec|ear|ers|sp|ra)'
+      scope: entity.name.tag.s
+
+    # Keywords that have the form KEY[u][i]
+    - match: '\b(?:add|sub|mult|div|rem|slt|sgt|sle|sge|seq|sne|)u?i?\b'
+      scope: keyword.control.s
+
+    # Keywords that have the form KEY[i]
+    - match: '\b(?:and|or|xor|sll|srl|sra|)i?\b'
+      scope: keyword.control.s
+
+    #j-type Keywords
+    - match: '\b(?:j|jal|beqz|bnez|lw|sw|la)\b'
+      scope: keyword.control.s
+      push: label_ref
+
+    # Remaining Keywords
+    - match: '\b(?:lhi|movgs|movsg|break|syscall|rfe|jr|jalr)\b'
+      scope: keyword.control.s
+
+  # Label Reference scope
+  label_ref:
+    - include: main
+    - match: '(?:\b[A-Za-z_-]+\b)|(?:$)' #Match until end of line
+      scope: string.s
+      pop: true
+
+  line_comment:
+    - meta_scope: comment.line.s
+    - match: $
+      pop: true
