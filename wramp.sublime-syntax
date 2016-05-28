@@ -19,7 +19,7 @@ contexts:
 
     # Directives
     - match: '(?:\.[A-Za-z]*)'
-      scope: entity.name.function.s
+      scope: variable.language.s
 
     # Decimal Numbers
     - match: '\b(?:[0-9.]+)\b'
@@ -31,19 +31,23 @@ contexts:
 
     # Characters
     - match: "'.'"
-      scope: constant.character.s
+      scope: string.single.s
+
+    # Strings
+    - match: '".*"'
+      scope: string.double.s
 
     # Label Declaration
-    - match: '\A\s*[A-Za-z_-]+:'
-      scope: string.s
+    - match: '\A\s*[A-Za-z0-9_-]+:'
+      scope: entity.name.function.s
 
     # General Purpose Registers
     - match: '(?:\$1[0-5]|\$[0-9])?\b'
-      scope: entity.name.tag.s
+      scope: storage.s
 
     # Special Purpose Registers
     - match: '\$(?:cctrl|estat|evec|ear|ers|sp|ra)'
-      scope: entity.name.tag.s
+      scope: storage.s
 
     # Keywords that have the form KEY[u][i]
     - match: '\b(?:add|sub|mult|div|rem|slt|sgt|sle|sge|seq|sne|)u?i?\b'
@@ -65,8 +69,8 @@ contexts:
   # Label Reference scope
   label_ref:
     - include: main
-    - match: '(?:\b[A-Za-z_-]+\b)|(?:$)' #Match until end of line
-      scope: string.s
+    - match: '(?:\b[A-Za-z0-9_-]+\b)|(?:$)' #Match until end of line
+      scope: entity.name.function.s
       pop: true
 
   line_comment:
